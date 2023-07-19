@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Tag adopt -->
+
+    <!-- Tag GA   data-adopt="XXXXX" -->
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <script>
+      const observer = new MutationObserver(mutations => {
+        console.log('mutations', mutations)
+        mutations.forEach(({ addedNodes }) => {
+          addedNodes.forEach(node => {
+            if (node.nodeType === 1 && node.tagName === 'SCRIPT') {
+              console.log(node)
+              const src = node.src || ''
+              const type = node.type
+
+              if (!node.getAttribute('adopt-accepted')) {
+                // Bloqueio automatico
+                // if (
+                //   node.innerHTML.includes('tag.goadopt.io/injector.js') ||
+                //   node.src.includes('tag.goadopt.io/injector.js')
+                // ) {
+                //   node.setAttribute('data-adopt', 'tag2')
+                //   node.type = node.type + '-adopt-blocked'
+                // }
+
+                // Bloqueio manual
+                if (node.getAttribute('data-adopt')) {
+                  node.type = node.type
+                    ? node.type + '-adopt-blocked'
+                    : 'application/javascript-adopt-blocked'
+                }
+              }
+            }
+          })
+        })
+      })
+
+      observer.observe(document.documentElement, {
+        childList: true,
+        subtree: true
+      })
+    </script>
+
+    <script>
+      function desbloquearTag(adoptTag) {
+        let tag = document.querySelector(`script[data-adopt="${adoptTag}"]`)
+        tag.type = tag.type.replace('-adopt-blocked', '')
+        tag.setAttribute('adopt-accepted', true)
+
+        document.head.appendChild(tag)
+      }
+    </script>
+
+    <script
+      type="text/javascript"
+      src="https://platform.linkedin.com/in.js"
+    ></script>
+
+    <script data-adopt="tag1" type="application/javascript">
+      console.log('Oi :)')
+    </script>
+
+    <meta
+      name="adopt-website-id"
+      content="e66a773e-b184-48f9-9452-aa6ff473e7e7"
+    />
+    <script
+      src="//tag.goadopt.io/injector.js?website_code=e66a773e-b184-48f9-9452-aa6ff473e7e7"
+      class="adopt-injector"
+    ></script>
+
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      data-adopt="tag3"
+      src="https://www.googletagmanager.com/gtag/js?id=G-D1EKZN6BH1"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+      gtag('js', new Date())
+
+      gtag('config', 'G-D1EKZN6BH1')
+    </script>
+  </head>
+  <body>
+    <button onclick="desbloquearTag('tag1')">Tag 1</button>
+    <button onclick="desbloquearTag('tag2')">Tag 2</button>
+  </body>
+</html>
